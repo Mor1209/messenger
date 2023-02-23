@@ -8,10 +8,14 @@ const Home: NextPage = () => {
 
   console.log('The data', session)
 
-  const reloadSession = () => {}
+  const reloadSession = () => {
+    const event = new Event('visibilitychange')
+    document.dispatchEvent(event)
+  }
 
   return (
-    <div className='bg-gray-900'>
+    <div className='bg-gray-900 text-white'>
+      {session?.user?.username}
       {session?.user?.username ? (
         <Chat />
       ) : (

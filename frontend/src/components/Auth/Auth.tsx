@@ -1,6 +1,10 @@
+import { CreateUsernameData, CreateUsernameVariables } from '@/src/util/types'
+import { useMutation } from '@apollo/client'
 import { Session } from 'next-auth'
 import { signIn } from 'next-auth/react'
 import React, { useState } from 'react'
+import UserOperations from '../../graphql/operations/user'
+import toast from 'react-hot-toast'
 
 type Props = {
   session: Session | null
@@ -10,9 +14,33 @@ type Props = {
 export default function Auth({ session, reloadSession }: Props) {
   const [username, setUsername] = useState('')
 
+  const [createUsername, { loading, error }] = useMutation<
+    CreateUsernameData,
+    CreateUsernameVariables
+  >(UserOperations.Mutations.createUsername)
+
   const onSubmit = async () => {
+    if (!username) return
+
     try {
-    } catch (error) {
+      const { data } = await createUsername({ variables: { username } })
+
+      if (!data?.createUsername) {
+        throw new Error()
+      }
+
+      if (data.createUsername.error) {
+        const {
+          createUsername: { error },
+        } = data
+
+        throw new Error(error)
+      }
+
+      toast.success('Username successfully created! 🚀')
+      reloadSession()
+    } catch (error: any) {
+      toast.error(error?.message)
       console.log('onSubmit error', error)
     }
   }
