@@ -14,10 +14,9 @@ const Home: NextPage = () => {
   }
 
   return (
-    <div className='bg-gray-900 text-white'>
-      {session?.user?.username}
+    <div className='h-max bg-gray-900 text-zinc-200'>
       {session?.user?.username ? (
-        <Chat />
+        <Chat session={session} />
       ) : (
         <Auth session={session} reloadSession={reloadSession} />
       )}
