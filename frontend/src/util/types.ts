@@ -1,4 +1,7 @@
-import { ConversationPopulated } from '../../../backend/src/util/types'
+import {
+  ConversationPopulated,
+  MessagePopulated,
+} from '../../../backend/src/util/types'
 
 // Users
 export type CreateUsernameData = {
@@ -38,4 +41,21 @@ export type createConversationData = {
 
 export type createConversationInput = {
   participantIds: Array<string>
+}
+
+// Messages
+export type MessagesData = {
+  messages: Array<MessagePopulated>
+}
+
+export type MessageVariables = {
+  conversationId: string
+}
+
+export type MessageSubscriptionData = {
+  subscriptionData: {
+    data: {
+      messageSent: MessagePopulated
+    }
+  }
 }

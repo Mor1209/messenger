@@ -1,8 +1,6 @@
 import gql from 'graphql-tag'
 
 const typeDefs = gql`
-  scalar Date
-
   type Mutation {
     createConversation(participantIds: [String]): createConversationResponse
   }

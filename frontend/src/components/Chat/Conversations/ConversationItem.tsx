@@ -142,23 +142,25 @@ export default function ConversationItem({
           )}
         </Menu>
       )}
-      <span className='inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100'>
-        <svg
-          className='h-full w-full text-gray-300'
-          fill='currentColor'
-          viewBox='0 0 24 24'
-        >
-          <path d='M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z' />
-        </svg>
-      </span>
-      <div className='flex h-full w-[80%] items-center justify-between'>
+      <div>
+        <span className='inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100'>
+          <svg
+            className='h-full w-full text-gray-300'
+            fill='currentColor'
+            viewBox='0 0 24 24'
+          >
+            <path d='M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z' />
+          </svg>
+        </span>
+      </div>
+      <div className='ml-2 flex h-full w-[80%] items-center justify-between'>
         <div className='flex h-full w-[70%] flex-col'>
-          <p className='text overflow-hidden overflow-ellipsis whitespace-nowrap text-left font-bold'>
+          <p className='overflow-hidden overflow-ellipsis whitespace-nowrap text-left font-bold'>
             {formatUsernames(conversation.participants, userId)}
           </p>
           {conversation.latestMessage && (
-            <div className='w-[140%]'>
-              <p className='overflow-hidden overflow-ellipsis whitespace-nowrap'>
+            <div className='w-[105%]'>
+              <p className='overflow-hidden overflow-ellipsis whitespace-nowrap text-left font-thin'>
                 {conversation.latestMessage.body}
               </p>
             </div>
@@ -166,7 +168,7 @@ export default function ConversationItem({
         </div>
         <div>
           <p className='text-right'>
-            {formatRelative(new Date(conversation.updatedAt), new Date(), {
+            {formatRelative(conversation.updatedAt, new Date(), {
               locale: {
                 ...enUS,
                 formatRelative: token =>

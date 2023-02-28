@@ -10,7 +10,7 @@ type Props = {
 
 export default function Chat({ session }: Props) {
   return (
-    <div className='flex h-screen'>
+    <div className='flex h-screen w-full'>
       <ConversationWrapper session={session} />
       <FeedWrapper session={session} />
       {/* <button

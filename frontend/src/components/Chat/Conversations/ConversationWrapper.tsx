@@ -7,6 +7,7 @@ import { ConversationsData } from '../../../util/types'
 import { toast } from 'react-hot-toast'
 import { ConversationPopulated } from '@/../backend/src/util/types'
 import { useRouter } from 'next/router'
+import SkeletonLoader from '../../common/SkeletonLoader'
 
 type Props = {
   session: Session
@@ -65,15 +66,19 @@ export default function ConversationWrapper({ session }: Props) {
 
   return (
     <div
-      className={`w-full bg-gray-800 px-3 py-6 md:w-[40%] ${
-        conversationId ? 'hidden md:flex' : 'flex'
+      className={`w-screen gap-4 bg-gray-800 px-3 py-6 md:flex md:w-[30%] md:min-w-[300px] md:flex-col ${
+        conversationId ? 'hidden' : 'flex'
       }`}
     >
-      <ConversationList
-        session={session}
-        conversations={conversationsData?.conversations || []}
-        onViewConversation={onViewConversation}
-      />
+      {conversationsLoading ? (
+        <SkeletonLoader count={8} height='h-[80px]' />
+      ) : (
+        <ConversationList
+          session={session}
+          conversations={conversationsData?.conversations || []}
+          onViewConversation={onViewConversation}
+        />
+      )}
     </div>
   )
 }

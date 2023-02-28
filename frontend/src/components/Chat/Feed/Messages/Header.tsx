@@ -25,7 +25,7 @@ export default function Header({ userId, conversationId }: Props) {
   }
 
   return (
-    <div className='flex content-center items-center gap-6 border-b-[1px] border-solid border-gray-800 py-5 px-4'>
+    <div className='flex w-full content-center items-center gap-6 border-b-[1px] border-solid border-gray-800 py-5 px-4'>
       <button
         onClick={() =>
           router.replace('?conversationId', '/', {
