@@ -1,5 +1,6 @@
 import { ConversationPopulated } from '@/../backend/src/util/types'
 import { Session } from 'next-auth'
+import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import ConversationItem from './ConversationItem'
 import ConversationModal from './Modal/Modal'
@@ -7,9 +8,15 @@ import ConversationModal from './Modal/Modal'
 type Props = {
   session: Session
   conversations: Array<ConversationPopulated>
+  onViewConversation: (conversationId: string) => void
 }
 
-export default function ConversationList({ session, conversations }: Props) {
+export default function ConversationList({
+  session,
+  conversations,
+  onViewConversation,
+}: Props) {
+  const router = useRouter()
   const [openModal, setOpenModal] = useState(false)
 
   const toggleModal = () => {
@@ -30,7 +37,17 @@ export default function ConversationList({ session, conversations }: Props) {
         session={session}
       />
       {conversations.map(conversation => (
-        <ConversationItem key={conversation.id} conversation={conversation} />
+        <ConversationItem
+          key={conversation.id}
+          userId={session.user.id}
+          conversation={conversation}
+          hasSeenLatestMessage={false}
+          selectedConversationId={router.query.conversationId as string}
+          onClick={() => onViewConversation(conversation.id)}
+          onEditConversation={() => {}}
+          onDeleteConversation={() => {}}
+          onLeaveConversation={() => {}}
+        />
       ))}
     </div>
   )

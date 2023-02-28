@@ -6,6 +6,7 @@ import { useQuery } from '@apollo/client'
 import { ConversationsData } from '../../../util/types'
 import { toast } from 'react-hot-toast'
 import { ConversationPopulated } from '@/../backend/src/util/types'
+import { useRouter } from 'next/router'
 
 type Props = {
   session: Session
@@ -25,6 +26,14 @@ export default function ConversationWrapper({ session }: Props) {
       },
     }
   )
+  const router = useRouter()
+  const {
+    query: { conversationId },
+  } = router
+
+  const onViewConversation = async (conversationId: string) => {
+    router.push({ query: { conversationId } })
+  }
 
   const subscribeToNewConversations = () => {
     subscribeToMore({
@@ -55,10 +64,15 @@ export default function ConversationWrapper({ session }: Props) {
   }, [])
 
   return (
-    <div className='w-max bg-gray-800 px-3 py-6 md:w-1/3'>
+    <div
+      className={`w-full bg-gray-800 px-3 py-6 md:w-[40%] ${
+        conversationId ? 'hidden md:flex' : 'flex'
+      }`}
+    >
       <ConversationList
         session={session}
         conversations={conversationsData?.conversations || []}
+        onViewConversation={onViewConversation}
       />
     </div>
   )

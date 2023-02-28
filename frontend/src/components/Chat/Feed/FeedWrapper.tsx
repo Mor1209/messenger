@@ -1,6 +1,7 @@
 import { Session } from 'next-auth'
 import { useRouter } from 'next/router'
 import React from 'react'
+import Header from './Messages/Header'
 
 type Props = {
   session: Session
@@ -14,11 +15,13 @@ export default function FeedWrapper({ session }: Props) {
   return (
     <div
       className={`w-full flex-col ${
-        conversationId ? 'hidden md:flex' : 'flex'
+        conversationId ? 'flex' : 'hidden md:flex'
       }`}
     >
-      {conversationId ? (
-        <div className='flex'>{conversationId}</div>
+      {conversationId && typeof conversationId === 'string' ? (
+        <div className='flex flex-grow flex-col justify-between overflow-hidden'>
+          <Header userId={session.user.id} conversationId={conversationId} />
+        </div>
       ) : (
         <div>No conversation selected</div>
       )}
