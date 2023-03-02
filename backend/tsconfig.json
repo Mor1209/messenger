@@ -10,7 +10,9 @@
     "skipLibCheck": true,
     "allowJs": true,
     "noEmit": true,
-    "checkJs": false
+    "checkJs": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules"]
