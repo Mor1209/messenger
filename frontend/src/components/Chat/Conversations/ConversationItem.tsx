@@ -1,4 +1,4 @@
-import { ConversationPopulated } from '@/../backend/src/util/types'
+import { ConversationPopulated } from '../../../../../backend/src/util/types'
 import { formatUsernames } from '@/src/util/functions'
 import { Menu, Popover, Transition } from '@headlessui/react'
 import React, { useEffect, useRef, useState } from 'react'
