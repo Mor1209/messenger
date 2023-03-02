@@ -4,7 +4,7 @@
     "module": "esnext",
     "outDir": "./backend/build",
     "rootDir": "./src",
-    "strict": false,
+    "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -12,5 +12,6 @@
     "noEmit": true,
     "checkJs": false
   },
+  "include": ["**/*.ts"],
   "exclude": ["node_modules"]
 }
