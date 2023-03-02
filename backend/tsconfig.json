@@ -2,8 +2,8 @@
   "compilerOptions": {
     "target": "es6",
     "module": "es2015",
-    "outDir": "./build",
-    "rootDir": "./src",
+    "outDir": "./backend/build",
+    "rootDir": "./backend/src",
     "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true
