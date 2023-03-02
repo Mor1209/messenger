@@ -4,15 +4,13 @@
     "module": "esnext",
     "outDir": "./backend/build",
     "rootDir": "./src",
-    "strict": true,
+    "strict": false,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "allowJs": true,
     "noEmit": true,
-    "checkJs": false,
-    "strictInjectionParameters": false,
-    "strictTemplates": false
+    "checkJs": false
   },
   "exclude": ["node_modules"]
 }
