@@ -219,6 +219,8 @@ export default function ConversationWrapper({ session }: Props) {
             ),
           },
         })
+
+        router.push('/')
       },
     }
   )

@@ -6,8 +6,6 @@ import Chat from '../components/Chat/Chat'
 const Home: NextPage = () => {
   const { data: session } = useSession()
 
-  console.log('The data', session)
-
   const reloadSession = () => {
     const event = new Event('visibilitychange')
     document.dispatchEvent(event)

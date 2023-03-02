@@ -57,10 +57,8 @@ export default function ConversationItem({
 
   const handleClick = (event: React.MouseEvent) => {
     if (event.type === 'click') {
-      console.log('click fired')
       onClick()
     } else if (event.type === 'contextmenu') {
-      console.log('context fired')
       event.preventDefault()
 
       // Disable scrolling on all parent elements of the popover
@@ -147,7 +145,6 @@ export default function ConversationItem({
                       type='button'
                       className='flex items-center space-x-3 rounded-md px-4 py-2 hover:bg-zinc-600'
                       onClick={event => {
-                        console.log('Edit button clicked')
                         event.stopPropagation()
                         handleClosePopover()
                         onEditConversation()

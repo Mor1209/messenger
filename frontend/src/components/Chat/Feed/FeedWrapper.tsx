@@ -17,7 +17,7 @@ export default function FeedWrapper({ session }: Props) {
 
   return (
     <div
-      className={`w-screen overflow-hidden md:w-[70%] ${
+      className={`w-screen overflow-hidden md:flex md:w-[70%] ${
         conversationId ? 'flex flex-col' : 'hidden'
       }`}
     >

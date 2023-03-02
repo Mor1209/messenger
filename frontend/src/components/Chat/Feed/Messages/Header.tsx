@@ -20,10 +20,6 @@ export default function Header({ userId, conversationId }: Props) {
     conversation => conversation.id === conversationId
   )
 
-  if (data?.conversations && !loading && !conversation) {
-    router?.replace(process.env.NEXT_PUBLIC_BASE_URL as string)
-  }
-
   return (
     <div className='flex w-full content-center items-center gap-6 border-b-[1px] border-solid border-gray-800 py-5 px-4'>
       <button
@@ -36,7 +32,6 @@ export default function Header({ userId, conversationId }: Props) {
       >
         Back
       </button>
-      {/* <div role='status' className='max-w-sm animate-pulse'> */}
       {!conversation && !loading && <p>Conversation Not Found</p>}
       {conversation && (
         <div className='flex'>
@@ -46,8 +41,6 @@ export default function Header({ userId, conversationId }: Props) {
           </p>
         </div>
       )}
-      {/* <span className='sr-only'>Loading...</span>
-      </div> */}
     </div>
   )
 }
