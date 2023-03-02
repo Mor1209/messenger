@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "nodemon build/index.ts",
+    "build": "prisma generate",
+    "start": "nodemon src/index.ts",
     "dev": "nodemon src/index.ts"
   },
   "keywords": [],
