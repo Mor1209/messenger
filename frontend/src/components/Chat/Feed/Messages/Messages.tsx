@@ -28,10 +28,6 @@ export default function Messages({ userId, conversationId }: Props) {
     },
   })
 
-  if (error) {
-    return null
-  }
-
   const subscribeToMoreMessages = (conversationId: string) => {
     subscribeToMore({
       document: MessageOperations.Subscriptions.messageSent,
@@ -44,14 +40,22 @@ export default function Messages({ userId, conversationId }: Props) {
         const newMessage = subscriptionData.data.messageSent
 
         return Object.assign({}, prev, {
-          messages: [newMessage, ...prev.messages],
+          messages:
+            newMessage.sender.id === userId
+              ? prev.messages
+              : [newMessage, ...prev.messages],
         })
       },
     })
   }
+
   useEffect(() => {
     subscribeToMoreMessages(conversationId)
   }, [conversationId])
+
+  if (error) {
+    return null
+  }
 
   return (
     <div className='flex w-full flex-col justify-end overflow-hidden'>

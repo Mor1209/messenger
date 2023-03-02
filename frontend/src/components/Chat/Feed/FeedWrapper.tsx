@@ -4,6 +4,7 @@ import React from 'react'
 import Header from './Messages/Header'
 import Input from './Messages/Input'
 import Messages from './Messages/Messages'
+import NoConversation from './NoConversation'
 
 type Props = {
   session: Session
@@ -32,7 +33,7 @@ export default function FeedWrapper({ session }: Props) {
           <Input session={session} conversationId={conversationId} />
         </>
       ) : (
-        <div>No conversation selected</div>
+        <NoConversation />
       )}
     </div>
   )

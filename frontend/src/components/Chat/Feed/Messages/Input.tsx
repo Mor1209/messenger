@@ -1,9 +1,11 @@
 import { SendMessageArguments } from '@/../backend/src/util/types'
+import { MessagesData } from '@/src/util/types'
 import { useMutation } from '@apollo/client'
 import { Session } from 'next-auth'
 import React, { useState } from 'react'
 import { toast } from 'react-hot-toast'
 import MessageOperations from '../../../../graphql/operations/message'
+import { v4 as uuidv4 } from 'uuid'
 
 type Props = {
   session: Session
@@ -22,15 +24,51 @@ export default function Input({ session, conversationId }: Props) {
 
     try {
       const { id: senderId } = session.user
+      const messageId = uuidv4()
       const newMessage: SendMessageArguments = {
+        id: messageId,
         senderId,
         conversationId,
         body: messageBody,
       }
 
+      setMessageBody('')
+
       const { data, errors } = await sendMessage({
         variables: {
           ...newMessage,
+        },
+        optimisticResponse: {
+          sendMessage: true,
+        },
+        update: cache => {
+          const existing = cache.readQuery<MessagesData>({
+            query: MessageOperations.Query.messages,
+            variables: { conversationId },
+          }) as MessagesData
+
+          cache.writeQuery<MessagesData, { conversationId: string }>({
+            query: MessageOperations.Query.messages,
+            variables: { conversationId },
+            data: {
+              ...existing,
+              messages: [
+                {
+                  id: messageId,
+                  body: messageBody,
+                  senderId: session.user.id,
+                  conversationId,
+                  sender: {
+                    id: session.user.id,
+                    username: session.user.username,
+                  },
+                  createdAt: new Date(Date.now()),
+                  updatedAt: new Date(Date.now()),
+                },
+                ...existing.messages,
+              ],
+            },
+          })
         },
       })
 

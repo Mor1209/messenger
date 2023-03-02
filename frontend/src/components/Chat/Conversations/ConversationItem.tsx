@@ -1,9 +1,15 @@
 import { ConversationPopulated } from '@/../backend/src/util/types'
 import { formatUsernames } from '@/src/util/functions'
-import { Menu } from '@headlessui/react'
-import React, { useState } from 'react'
+import { Menu, Popover, Transition } from '@headlessui/react'
+import React, { useEffect, useRef, useState } from 'react'
 import { formatRelative } from 'date-fns'
 import enUS from 'date-fns/locale/en-US'
+import {
+  PencilIcon,
+  ArrowLeftOnRectangleIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline'
+import { useWindowSize } from '@/src/hooks/useWindowSize'
 
 const formatRelativeLocale = {
   lastWeek: 'eeee',
@@ -15,6 +21,7 @@ const formatRelativeLocale = {
 type Props = {
   userId: string
   conversation: ConversationPopulated
+  toggleScroll: () => void
   onClick: () => void
   onEditConversation?: () => void
   hasSeenLatestMessage?: boolean
@@ -28,24 +35,80 @@ export default function ConversationItem({
   conversation,
   selectedConversationId,
   hasSeenLatestMessage,
+  toggleScroll,
   onClick,
   onEditConversation,
   onDeleteConversation,
   onLeaveConversation,
 }: Props) {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState<{ x: number; y: number } | null>(
+    null
+  )
+  const menuRef = useRef<HTMLElement | null>(null)
+
+  const windowSize = useWindowSize()
+
+  function preventScroll(e: any) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    return false
+  }
 
   const handleClick = (event: React.MouseEvent) => {
     if (event.type === 'click') {
+      console.log('click fired')
       onClick()
     } else if (event.type === 'contextmenu') {
+      console.log('context fired')
       event.preventDefault()
-      setMenuOpen(true)
+
+      // Disable scrolling on all parent elements of the popover
+      // if (conversationWrapperRef.current?.parentElement) {
+      //   conversationWrapperRef.current?.parentElement.addEventListener(
+      //     'wheel',
+      //     preventScroll
+      //   )
+      // }
+
+      const x = event.clientX
+      const y = event.clientY
+      setMenuOpen({ x, y })
+      toggleScroll()
     }
+  }
+
+  const handleClosePopover = () => {
+    // if (conversationWrapperRef.current?.parentElement) {
+    //   conversationWrapperRef.current?.parentElement.removeEventListener(
+    //     'wheel',
+    //     preventScroll
+    //   )
+    // }
+    setMenuOpen(null)
+    toggleScroll()
   }
 
   const showMenu =
     onEditConversation && onDeleteConversation && onLeaveConversation
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        menuOpen &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node)
+      ) {
+        handleClosePopover()
+      }
+    }
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [menuOpen])
 
   return (
     <div
@@ -55,92 +118,78 @@ export default function ConversationItem({
         conversation.id === selectedConversationId ? 'bg-gray-700' : ''
       }`}
     >
-      {showMenu && (
-        <Menu>
-          {({ open }) => (
-            <>
-              {menuOpen && (
-                <Menu.Items className="bg-['#2d2d2d']">
-                  <Menu.Item>
+      {menuOpen && showMenu && (
+        <Transition
+          appear={true}
+          show={true}
+          enter='transition ease-in-out duration-300 transform'
+          enterFrom='opacity-0 scale-80'
+          enterTo='opacity-100 scale-100'
+          leave='transition ease-in duration-200 transform'
+          leaveFrom='opacity-100 scale-100'
+          leaveTo='opacity-0 scale-80'
+          className={`fixed z-10`}
+          style={{ top: menuOpen.y, left: menuOpen.x }}
+        >
+          <Popover as='div' ref={menuRef} className='relative'>
+            {({ open }) => (
+              <>
+                <Popover.Panel
+                  static
+                  className={`fixed z-10 w-48 ${
+                    windowSize?.height &&
+                    windowSize?.height / 2 < menuOpen.y &&
+                    '-translate-y-full'
+                  } rounded-lg border-zinc-400 bg-zinc-800 p-3 shadow-lg ring-1 ring-zinc-600`}
+                >
+                  <div className='flex flex-col space-y-2'>
                     <button
+                      type='button'
+                      className='flex items-center space-x-3 rounded-md px-4 py-2 hover:bg-zinc-600'
                       onClick={event => {
+                        console.log('Edit button clicked')
                         event.stopPropagation()
+                        handleClosePopover()
                         onEditConversation()
                       }}
                     >
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='none'
-                        viewBox='0 0 24 24'
-                        strokeWidth='1.5'
-                        stroke='currentColor'
-                        className='h-6 w-6'
-                      >
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125'
-                        />
-                      </svg>
-                      Edit
+                      <PencilIcon className='h-5 w-5 text-gray-400' />
+                      <span>Edit</span>
                     </button>
-                  </Menu.Item>
-                  {conversation.participants.length > 2 ? (
-                    <Menu.Item>
+                    {conversation.participants.length > 2 ? (
                       <button
+                        type='button'
+                        className='flex items-center space-x-3 rounded-md px-4 py-2 hover:bg-zinc-600'
                         onClick={event => {
                           event.stopPropagation()
+                          handleClosePopover()
                           onLeaveConversation(conversation)
                         }}
                       >
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          fill='none'
-                          viewBox='0 0 24 24'
-                          strokeWidth='1.5'
-                          stroke='currentColor'
-                          className='h-6 w-6'
-                        >
-                          <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            d='M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75'
-                          />
-                        </svg>
-                        Leave
+                        <ArrowLeftOnRectangleIcon className='h-5 w-5 text-red-700' />
+                        <span>Leave</span>
                       </button>
-                    </Menu.Item>
-                  ) : (
-                    <Menu.Item>
+                    ) : (
                       <button
+                        type='button'
+                        className='flex items-center space-x-3 rounded-md px-4 py-2 hover:bg-zinc-600'
                         onClick={event => {
                           event.stopPropagation()
+                          handleClosePopover()
                           onDeleteConversation(conversation.id)
                         }}
                       >
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          fill='none'
-                          viewBox='0 0 24 24'
-                          strokeWidth='1.5'
-                          stroke='currentColor'
-                          className='h-6 w-6'
-                        >
-                          <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            d='M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0'
-                          />
-                        </svg>
-                        Delete
+                        <TrashIcon className='h-5 w-5 text-red-700' />
+                        <span>Delete</span>
                       </button>
-                    </Menu.Item>
-                  )}
-                </Menu.Items>
-              )}
-            </>
-          )}
-        </Menu>
+                    )}
+                  </div>
+                  {/* Additional pop-up content */}
+                </Popover.Panel>
+              </>
+            )}
+          </Popover>
+        </Transition>
       )}
       <div>
         <span className='inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100'>

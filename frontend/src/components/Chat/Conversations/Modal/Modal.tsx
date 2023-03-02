@@ -16,14 +16,37 @@ import Participants from './Participants'
 import { toast } from 'react-hot-toast'
 import { Session } from 'next-auth'
 import { useRouter } from 'next/router'
+import {
+  ConversationPopulated,
+  ParticipantPopulated,
+} from '@/../backend/src/util/types'
+import ConversationOperations from '@/src/graphql/operations/conversation'
+import ConversationItem from '../ConversationItem'
 
 type Props = {
   isOpen: boolean
   session: Session
+  conversations: Array<ConversationPopulated>
+  editingConversation: ConversationPopulated | null
+  onViewConversation: (
+    conversationId: string,
+    hasSeenLatestMessage: boolean
+  ) => void
+  getUserParticipantObject: (
+    conversation: ConversationPopulated
+  ) => ParticipantPopulated
   onToggle: () => void
 }
 
-export default function Modal({ isOpen, session, onToggle }: Props) {
+export default function Modal({
+  isOpen,
+  session,
+  conversations,
+  editingConversation,
+  onToggle,
+  onViewConversation,
+  getUserParticipantObject,
+}: Props) {
   const {
     user: { id: userId },
   } = session
@@ -33,6 +56,9 @@ export default function Modal({ isOpen, session, onToggle }: Props) {
   const [username, setUsername] = useState('')
   const [participants, setParticipants] = useState<Array<SearchedUser>>([])
   const usernameInput = useRef<any>()
+  const [existingConversation, setExistingConversation] =
+    useState<ConversationPopulated | null>(null)
+
   const [searchUsers, { data, error, loading }] = useLazyQuery<
     SearchUsersData,
     SearchUsersInput
@@ -41,6 +67,70 @@ export default function Modal({ isOpen, session, onToggle }: Props) {
     useMutation<createConversationData, createConversationInput>(
       ConversationOperation.Mutations.createConversation
     )
+  const [updateParticipants, { loading: updateParticipantsLoading }] =
+    useMutation<
+      { updateParticipants: boolean },
+      { conversationId: string; participantIds: Array<string> }
+    >(ConversationOperations.Mutations.updateParticipants)
+
+  const onSubmit = () => {
+    if (!participants.length) return
+
+    const participantIds = participants.map(p => p.id)
+
+    const existing = findExistingConversation(participantIds)
+
+    if (existing) {
+      toast('Conversation already exists')
+      setExistingConversation(existing)
+      return
+    }
+
+    /**
+     * Determine which function to call
+     */
+    editingConversation
+      ? onUpdateConversation(editingConversation)
+      : onCreateConversation()
+  }
+
+  const findExistingConversation = (participantIds: Array<string>) => {
+    let existingConversation: ConversationPopulated | null = null
+
+    for (const conversation of conversations) {
+      const addedParticipants = conversation.participants.filter(
+        (p: { user: { id: string } }) => p.user.id !== userId
+      )
+
+      if (addedParticipants.length !== participantIds.length) {
+        continue
+      }
+
+      let allMatchingParticipants: boolean = false
+      for (const participant of addedParticipants) {
+        const foundParticipant = participantIds.find(
+          p => p === participant.user.id
+        )
+
+        if (!foundParticipant) {
+          allMatchingParticipants = false
+          break
+        }
+
+        /**
+         * If we hit here,
+         * all match
+         */
+        allMatchingParticipants = true
+      }
+
+      if (allMatchingParticipants) {
+        existingConversation = conversation
+      }
+    }
+
+    return existingConversation
+  }
 
   const onCreateConversation = async () => {
     const participantIds = [userId, ...participants.map(p => p.id)]
@@ -68,6 +158,44 @@ export default function Modal({ isOpen, session, onToggle }: Props) {
     }
   }
 
+  const onUpdateConversation = async (conversation: ConversationPopulated) => {
+    const participantIds = participants.map(p => p.id)
+
+    try {
+      const { data, errors } = await updateParticipants({
+        variables: {
+          conversationId: conversation.id,
+          participantIds,
+        },
+      })
+
+      if (!data?.updateParticipants || errors) {
+        throw new Error('Failed to update participants')
+      }
+
+      /**
+       * Clear state and close modal
+       * on successful update
+       */
+      setParticipants([])
+      setUsername('')
+      onToggle()
+    } catch (error) {
+      console.log('onUpdateConversation error', error)
+      toast.error('Failed to update participants')
+    }
+  }
+
+  const onConversationClick = () => {
+    if (!existingConversation) return
+
+    const { hasSeenLatestMessage } =
+      getUserParticipantObject(existingConversation)
+
+    onViewConversation(existingConversation.id, hasSeenLatestMessage)
+    onToggle()
+  }
+
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault()
     searchUsers({ variables: { username } })
@@ -81,6 +209,41 @@ export default function Modal({ isOpen, session, onToggle }: Props) {
   const removeParticipant = (userId: String) => {
     setParticipants(prev => prev.filter(p => p.id !== userId))
   }
+
+  useEffect(() => {
+    if (editingConversation) {
+      setParticipants(
+        editingConversation.participants.map(
+          (p: { user: SearchedUser }) => p.user as SearchedUser
+        )
+      )
+      return
+    }
+  }, [editingConversation])
+
+  /**
+   * Reset existing conversation state
+   * when participants added/removed
+   */
+  useEffect(() => {
+    setExistingConversation(null)
+  }, [participants])
+
+  /**
+   * Clear participant state if closed
+   */
+  useEffect(() => {
+    if (!isOpen) {
+      setParticipants([])
+    }
+  }, [isOpen])
+
+  if (error) {
+    toast.error('Error searching for users')
+    return null
+  }
+
+  console.log(editingConversation)
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
@@ -130,7 +293,9 @@ export default function Modal({ isOpen, session, onToggle }: Props) {
                     as='h3'
                     className='text-lg font-medium leading-6 text-zinc-200'
                   >
-                    Create a Conversation
+                    {editingConversation
+                      ? 'Update Conversation'
+                      : 'Create a Conversation'}
                   </Dialog.Title>
 
                   <form onSubmit={e => onSearch(e)} autoComplete='off'>
@@ -189,12 +354,24 @@ export default function Modal({ isOpen, session, onToggle }: Props) {
                         participants={participants}
                         removeParticipant={removeParticipant}
                       />
+                      <div className='mt-4'>
+                        {existingConversation && (
+                          <ConversationItem
+                            toggleScroll={() => {}}
+                            userId={userId}
+                            conversation={existingConversation}
+                            onClick={() => onConversationClick()}
+                          />
+                        )}
+                      </div>
                       <button
-                        disabled={createConversationLoading}
-                        onClick={onCreateConversation}
+                        disabled={!!existingConversation}
+                        onClick={onSubmit}
                         className='mt-6 h-9 w-full rounded-md bg-green-700/100 text-sm font-medium text-green-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-75 disabled:hover:bg-gray-700'
                       >
-                        Create Conversation
+                        {editingConversation
+                          ? 'Update Conversation'
+                          : 'Create Conversation'}
                       </button>
                     </>
                   )}

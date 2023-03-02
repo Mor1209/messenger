@@ -21,7 +21,7 @@ export default function Header({ userId, conversationId }: Props) {
   )
 
   if (data?.conversations && !loading && !conversation) {
-    router.replace(process.env.NEXT_PUBLIC_BASE_URL as string)
+    router?.replace(process.env.NEXT_PUBLIC_BASE_URL as string)
   }
 
   return (

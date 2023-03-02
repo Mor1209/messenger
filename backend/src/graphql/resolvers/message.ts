@@ -9,6 +9,7 @@ import { Prisma } from '@prisma/client'
 import { conversationPopulated } from './conversation'
 import { withFilter } from 'graphql-subscriptions'
 import { userIsConversationParticipant } from '../../util/functions'
+import { validate, version } from 'uuid'
 
 const resolvers = {
   Query: {
@@ -82,14 +83,18 @@ const resolvers = {
       }
 
       const { id: userId } = session.user
-      const { senderId, conversationId, body } = args
+      const { id, senderId, conversationId, body } = args
 
       try {
+        if (!(validate(id) && version(id) === 4)) {
+          throw new GraphQLError('failed to create messageId')
+        }
         /**
          * Create new message entity
          */
         const newMessage = await prisma.message.create({
           data: {
+            id,
             senderId,
             conversationId,
             body,

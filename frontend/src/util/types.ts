@@ -43,6 +43,30 @@ export type createConversationInput = {
   participantIds: Array<string>
 }
 
+export type ConversationCreatedSubscriptionData = {
+  subscriptionData: {
+    data: {
+      conversationCreated: ConversationPopulated
+    }
+  }
+}
+
+export type ConversationUpdatedData = {
+  conversationUpdated: {
+    conversation: Omit<ConversationPopulated, 'latestMessage'> & {
+      latestMessage: MessagePopulated
+    }
+    addedUserIds: Array<string> | null
+    removedUserIds: Array<string> | null
+  }
+}
+
+export interface ConversationDeletedData {
+  conversationDeleted: {
+    id: string
+  }
+}
+
 // Messages
 export type MessagesData = {
   messages: Array<MessagePopulated>
