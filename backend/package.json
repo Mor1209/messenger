@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "build": "prisma generate --schema=./src/prisma/schema.prisma",
     "start": "nodemon src/index.ts",
@@ -23,7 +22,7 @@
     "graphql-ws": "^5.11.3",
     "lodash.merge": "^4.6.2",
     "next-auth": "^4.19.2",
-    "node-fetch": "^3.3.0",
+    "node-fetch": "^2.6.9",
     "uuid": "^9.0.0",
     "ws": "^8.12.1"
   },
