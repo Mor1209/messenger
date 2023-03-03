@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "prisma generate",
+    "build": "prisma generate --schema=./src/prisma/schema.prisma",
     "start": "nodemon src/index.ts",
     "dev": "nodemon src/index.ts"
   },
