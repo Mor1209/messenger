@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "prisma generate --schema=./src/prisma/schema.prisma",
     "start": "nodemon src/index.ts",
