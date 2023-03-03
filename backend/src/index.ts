@@ -21,6 +21,8 @@ import fetch from 'node-fetch'
 
 async function main() {
   dotenv.config()
+  // @ts-ignore
+  globalThis.fetch = fetch
 
   const schema = makeExecutableSchema({
     typeDefs,
