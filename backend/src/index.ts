@@ -17,6 +17,7 @@ import * as dotenv from 'dotenv'
 import { useServer } from 'graphql-ws/lib/use/ws'
 import { PubSub } from 'graphql-subscriptions'
 import { WebSocketServer } from 'ws'
+import fetch from 'node-fetch'
 
 async function main() {
   dotenv.config()
