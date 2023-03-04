@@ -19,9 +19,6 @@ const wsLink =
 const httpLink = new HttpLink({
   uri: `https://${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql`,
   credentials: 'include',
-  headers: {
-    'Access-Control-Allow-Origin': '*',
-  },
 })
 
 const link =
