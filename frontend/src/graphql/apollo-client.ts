@@ -17,7 +17,7 @@ const wsLink =
     : null
 
 const httpLink = new HttpLink({
-  uri: `http://${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql`,
+  uri: `https://${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql`,
   credentials: 'include',
 })
 
