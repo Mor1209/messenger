@@ -4,7 +4,7 @@ import { expressMiddleware } from '@apollo/server/express4'
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
 import express from 'express'
-import https from 'https'
+import http from 'http'
 import cors from 'cors'
 import { json } from 'body-parser'
 import resolvers from './graphql/resolvers'
@@ -30,7 +30,7 @@ async function main() {
   })
 
   const app = express()
-  const httpServer = https.createServer(app)
+  const httpServer = http.createServer(app)
 
   const wsServer = new WebSocketServer({
     server: httpServer,
