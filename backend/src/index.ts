@@ -92,7 +92,8 @@ async function main() {
     expressMiddleware(server, {
       context: async ({ req, res }): Promise<GraphQLContext> => {
         const session = await getSession({ req })
-        console.log('session from index.js: ', session)
+        console.log('session from index.js: ', JSON.stringify(session))
+        console.log('cokies: ', JSON.stringify(req.cookies))
         return { session: session as Session, prisma, pubsub }
       },
     })
