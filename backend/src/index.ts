@@ -18,6 +18,7 @@ import { useServer } from 'graphql-ws/lib/use/ws'
 import { PubSub } from 'graphql-subscriptions'
 import { WebSocketServer } from 'ws'
 import fetch from 'node-fetch'
+import cookieParser from 'cookie-parser'
 
 async function main() {
   dotenv.config()
@@ -31,6 +32,7 @@ async function main() {
 
   const app = express()
   const httpServer = http.createServer(app)
+  app.set('trust proxy', process.env.NODE_ENV !== 'production')
 
   const wsServer = new WebSocketServer({
     server: httpServer,
@@ -87,6 +89,7 @@ async function main() {
 
   app.use(
     '/graphql',
+    cookieParser(),
     cors<cors.CorsRequest>(corsOptions),
     json(),
     expressMiddleware(server, {
