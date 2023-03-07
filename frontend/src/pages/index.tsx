@@ -24,7 +24,7 @@ const Home: NextPage = () => {
 
 export async function getServerSideProps(context: NextPageContext) {
   const session = await getSession(context)
-
+  console.log('session in index: ', session)
   return {
     props: {
       session,
