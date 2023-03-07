@@ -1,4 +1,10 @@
-import { ApolloClient, InMemoryCache, HttpLink, split } from '@apollo/client'
+import {
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+  split,
+  createHttpLink,
+} from '@apollo/client'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { createClient } from 'graphql-ws'
@@ -16,7 +22,7 @@ const wsLink =
       )
     : null
 
-const httpLink = new HttpLink({
+const httpLink = createHttpLink({
   uri: `https://${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql`,
   credentials: 'include',
 })
@@ -39,5 +45,4 @@ const link =
 export const client = new ApolloClient({
   link,
   cache: new InMemoryCache(),
-  credentials: 'include',
 })
