@@ -1,9 +1,9 @@
-import NextAuth from 'next-auth'
+import NextAuth, { NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import prisma from '../../../lib/prismadb'
 
-export default NextAuth({
+export const nextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -17,4 +17,6 @@ export default NextAuth({
       return { ...session, user: { ...session.user, ...user } }
     },
   },
-})
+}
+
+export default NextAuth(nextAuthOptions)
