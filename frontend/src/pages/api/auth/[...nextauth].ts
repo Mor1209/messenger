@@ -22,24 +22,24 @@ export const nextAuthOptions: NextAuthOptions = {
     sessionToken: {
       name: `__Secure-next-auth.session-token`,
       options: {
-        httpOnly: false,
+        httpOnly: true,
         sameSite: 'none',
-        secure: false,
+        secure: true,
       },
     },
     callbackUrl: {
       name: `__Secure-next-auth.callback-url`,
       options: {
         sameSite: 'none',
-        secure: false,
+        secure: true,
       },
     },
     csrfToken: {
       name: `__Host-next-auth.csrf-token`,
       options: {
-        httpOnly: false,
+        httpOnly: true,
         sameSite: 'none',
-        secure: false,
+        secure: true,
       },
     },
   },
