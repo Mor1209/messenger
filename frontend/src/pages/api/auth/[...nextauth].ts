@@ -18,6 +18,26 @@ export const nextAuthOptions: NextAuthOptions = {
     },
   },
   debug: process.env.NODE_ENV === 'production',
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        domain: '.railway.app',
+      },
+    },
+    callbackUrl: {
+      name: `__Secure-next-auth.callback-url`,
+      options: {
+        domain: '.railway.app',
+      },
+    },
+    csrfToken: {
+      name: `__Host-next-auth.csrf-token`,
+      options: {
+        domain: '.railway.app',
+      },
+    },
+  },
 }
 
 export default NextAuth(nextAuthOptions)
