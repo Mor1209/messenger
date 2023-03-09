@@ -22,19 +22,27 @@ export const nextAuthOptions: NextAuthOptions = {
     sessionToken: {
       name: `__Secure-next-auth.session-token`,
       options: {
-        domain: '.railway.app',
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
       },
     },
     callbackUrl: {
       name: `__Secure-next-auth.callback-url`,
       options: {
-        domain: '.railway.app',
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
       },
     },
     csrfToken: {
       name: `__Host-next-auth.csrf-token`,
       options: {
-        domain: '.railway.app',
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
       },
     },
   },
