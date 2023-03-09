@@ -26,7 +26,7 @@ export const nextAuthOptions: NextAuthOptions = {
         sameSite: 'lax',
         path: '/',
         secure: true,
-        domain: 'messenger-production-4620.up.railway.app',
+        domain: '.messenger-production-4620.up.railway.app',
       },
     },
     callbackUrl: {
@@ -35,7 +35,7 @@ export const nextAuthOptions: NextAuthOptions = {
         sameSite: 'lax',
         path: '/',
         secure: true,
-        domain: 'messenger-production-4620.up.railway.app',
+        domain: '.messenger-production-4620.up.railway.app',
       },
     },
     csrfToken: {
@@ -45,7 +45,7 @@ export const nextAuthOptions: NextAuthOptions = {
         sameSite: 'lax',
         path: '/',
         secure: true,
-        domain: 'messenger-production-4620.up.railway.app',
+        domain: '.messenger-production-4620.up.railway.app',
       },
     },
   },
