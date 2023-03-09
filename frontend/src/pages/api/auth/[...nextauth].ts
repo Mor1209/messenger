@@ -18,31 +18,6 @@ export const nextAuthOptions: NextAuthOptions = {
     },
   },
   debug: process.env.NODE_ENV === 'production',
-  cookies: {
-    sessionToken: {
-      name: `__Secure-next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'none',
-        secure: true,
-      },
-    },
-    callbackUrl: {
-      name: `__Secure-next-auth.callback-url`,
-      options: {
-        sameSite: 'none',
-        secure: true,
-      },
-    },
-    csrfToken: {
-      name: `__Host-next-auth.csrf-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'none',
-        secure: true,
-      },
-    },
-  },
 }
 
 export default NextAuth(nextAuthOptions)
