@@ -17,7 +17,7 @@ export const nextAuthOptions: NextAuthOptions = {
       return { ...session, user: { ...session.user, ...user } }
     },
   },
-  debug: process.env.NODE_ENV === 'production',
+  debug: process.env.NODE_ENV !== 'production',
   cookies: {
     sessionToken: {
       name: `__Secure-next-auth.session-token`,

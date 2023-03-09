@@ -6,7 +6,6 @@ import Chat from '../components/Chat/Chat'
 const Home: NextPage = () => {
   const { data: session } = useSession()
 
-  console.log('session: ', session)
   const reloadSession = () => {
     const event = new Event('visibilitychange')
     document.dispatchEvent(event)
@@ -25,7 +24,6 @@ const Home: NextPage = () => {
 
 export async function getServerSideProps(context: NextPageContext) {
   const session = await getSession(context)
-  console.log('session in index: ', session)
   return {
     props: {
       session,

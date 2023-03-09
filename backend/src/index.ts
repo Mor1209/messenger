@@ -2,7 +2,6 @@
 import { ApolloServer } from '@apollo/server'
 import { expressMiddleware } from '@apollo/server/express4'
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'
 import express from 'express'
 import http from 'http'
 import cors from 'cors'
@@ -18,7 +17,6 @@ import { useServer } from 'graphql-ws/lib/use/ws'
 import { PubSub } from 'graphql-subscriptions'
 import { WebSocketServer } from 'ws'
 import fetch from 'node-fetch'
-import cookieParser from 'cookie-parser'
 
 async function main() {
   dotenv.config()
@@ -81,22 +79,18 @@ async function main() {
   })
   await server.start()
 
-  // origin: process.env.BASE_URL,
   const corsOptions = {
-    origin: true,
+    origin: process.env.BASE_URL,
     credentials: true,
   }
 
   app.use(
     '/graphql',
-    cookieParser(),
     cors<cors.CorsRequest>(corsOptions),
     json(),
     expressMiddleware(server, {
       context: async ({ req, res }): Promise<GraphQLContext> => {
         const session = await getSession({ req })
-        console.log('session from index.js: ', JSON.stringify(session))
-        console.log('cokies: ', JSON.stringify(req.cookies))
         return { session: session as Session, prisma, pubsub }
       },
     })
@@ -105,7 +99,7 @@ async function main() {
   await new Promise<void>(resolve =>
     httpServer.listen({ port: process.env.PORT || 4000 }, resolve)
   )
-  console.log(`🚀 Server ready at http://localhost:4000/graphql`)
+  console.log(`🚀 Server ready at ${process.env.BASE_URL}:${process.env.PORT}`)
 }
 
 main().catch(err => console.log(err))

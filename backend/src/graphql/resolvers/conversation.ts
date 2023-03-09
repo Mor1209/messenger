@@ -20,7 +20,6 @@ const resolvers = {
       const { session, prisma } = context
 
       if (!session?.user) {
-        console.log('session: ', session)
         throw new GraphQLError('Not authorized')
       }
 
