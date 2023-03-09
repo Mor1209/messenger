@@ -45,7 +45,6 @@ export const nextAuthOptions: NextAuthOptions = {
         sameSite: 'lax',
         path: '/',
         secure: true,
-        domain: '.messenger-production-4620.up.railway.app',
       },
     },
   },
