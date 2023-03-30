@@ -58,7 +58,7 @@ export default function Messages({ userId, conversationId }: Props) {
   }
 
   return (
-    <div className='flex w-full flex-col justify-end overflow-hidden'>
+    <div className='flex h-full w-full flex-col justify-end overflow-hidden'>
       {loading && (
         <div className='flex flex-col gap-4 p-4'>
           <SkeletonLoader count={4} height={'h-[60px]'} />

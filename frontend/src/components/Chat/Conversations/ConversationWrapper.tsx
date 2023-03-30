@@ -365,7 +365,7 @@ export default function ConversationWrapper({ session }: Props) {
   return (
     <div
       ref={conversationWrapperRef}
-      className={`w-screen gap-4 overflow-y-scroll bg-gray-800 px-3 py-6 md:flex md:w-[30%] md:min-w-[300px] md:flex-col ${
+      className={`w-screen flex-col gap-4 overflow-y-scroll bg-gray-800 px-3 py-6 md:flex md:w-[30%] md:min-w-[300px] ${
         conversationId ? 'hidden' : 'flex'
       }`}
     >

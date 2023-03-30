@@ -14,7 +14,9 @@ const wsLink =
   typeof window !== 'undefined'
     ? new GraphQLWsLink(
         createClient({
-          url: `wss://${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql/subscriptions`,
+          url: `ws${process.env.NODE_ENV === 'production' ? 's' : ''}://${
+            process.env.NEXT_PUBLIC_BACKEND_URL
+          }/graphql/subscriptions`,
           connectionParams: async () => ({
             session: await getSession(),
           }),
@@ -23,7 +25,9 @@ const wsLink =
     : null
 
 const httpLink = createHttpLink({
-  uri: `https://${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql`,
+  uri: `http${process.env.NODE_ENV === 'production' ? 's' : ''}://${
+    process.env.NEXT_PUBLIC_BACKEND_URL
+  }/graphql`,
   credentials: 'include',
 })
 

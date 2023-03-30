@@ -20,31 +20,37 @@ export const nextAuthOptions: NextAuthOptions = {
   debug: process.env.NODE_ENV !== 'production',
   cookies: {
     sessionToken: {
-      name: `__Secure-next-auth.session-token`,
+      name: `${
+        process.env.NODE_ENV === 'production' ? '__Secure-' : ''
+      }next-auth.session-token`,
       options: {
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
-        secure: true,
-        domain: '.railway.app',
+        secure: process.env.NODE_ENV === 'production',
+        domain: process.env.COOKIE_DOMAIN,
       },
     },
     callbackUrl: {
-      name: `__Secure-next-auth.callback-url`,
+      name: `${
+        process.env.NODE_ENV === 'production' ? '__Secure-' : ''
+      }next-auth.callback-url`,
       options: {
         sameSite: 'lax',
         path: '/',
-        secure: true,
-        domain: '.railway.app',
+        secure: process.env.NODE_ENV === 'production',
+        domain: process.env.COOKIE_DOMAIN,
       },
     },
     csrfToken: {
-      name: `__Host-next-auth.csrf-token`,
+      name: `${
+        process.env.NODE_ENV === 'production' ? '__Host-' : ''
+      }next-auth.csrf-token`,
       options: {
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
       },
     },
   },
