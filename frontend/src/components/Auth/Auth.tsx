@@ -97,12 +97,32 @@ export default function Auth({ session, reloadSession }: Props) {
         ) : (
           <>
             <p className='text-3xl text-zinc-200'>Messenger</p>
-            <button onClick={() => signIn('google')}>
-              <div className='inline-flex flex-nowrap items-center gap-2 rounded-md bg-gray-700 px-4 py-2 text-sm font-medium text-zinc-200 hover:bg-gray-600 focus:z-10'>
-                <img src='/images/googlelogo.png' className='h-5' />
-                Continue with Google
-              </div>
-            </button>
+            <div className='flex flex-col gap-3'>
+              <button onClick={() => signIn('google')}>
+                <div className='inline-flex w-[15rem] flex-nowrap items-center gap-2 rounded-md bg-gray-700 px-4 py-2 text-sm font-medium text-zinc-200 hover:bg-gray-600 focus:z-10'>
+                  <img src='/images/googlelogo.png' className='h-5' />
+                  Continue with Google
+                </div>
+              </button>
+              <button onClick={() => signIn()}>
+                <div className='inline-flex w-[15rem] flex-nowrap items-center gap-2 rounded-md bg-gray-700 px-4 py-2 text-sm font-medium text-zinc-200 hover:bg-gray-600 focus:z-10'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    strokeWidth={1.5}
+                    stroke='currentColor'
+                    className='h-5 w-5'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      d='M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 10-2.636 6.364M16.5 12V8.25'
+                    />
+                  </svg>
+                  Continue with an Email
+                </div>
+              </button>
+            </div>
           </>
         )}
       </div>
